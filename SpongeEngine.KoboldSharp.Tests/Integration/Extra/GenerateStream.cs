@@ -19,7 +19,7 @@ namespace SpongeEngine.KoboldSharp.Tests.Integration.Extra
             KoboldSharpClient.KoboldSharpRequest request = new KoboldSharpClient.KoboldSharpRequest
             {
                 Prompt = "Write a short story about",
-                MaxLength = 20,
+                MaxLength = 100,
                 Temperature = 0.7f,
                 TopP = 0.9f,
                 TopK = 40,

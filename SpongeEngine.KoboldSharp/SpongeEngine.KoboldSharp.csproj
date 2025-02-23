@@ -49,7 +49,4 @@
     <ItemGroup>
         <None Include="..\README.md" Pack="true" PackagePath="\" />
     </ItemGroup>
-    <ItemGroup>
-      <ProjectReference Include="..\..\LLMSharp.Core\SpongeEngine.LLMSharp.Core\SpongeEngine.LLMSharp.Core.csproj" />
-    </ItemGroup>
 </Project>

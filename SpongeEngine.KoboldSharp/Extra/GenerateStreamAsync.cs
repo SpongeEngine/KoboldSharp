@@ -4,7 +4,6 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
-using SpongeEngine.LLMSharp.Core.Exceptions;
 
 namespace SpongeEngine.KoboldSharp
 {
@@ -30,24 +29,16 @@ namespace SpongeEngine.KoboldSharp
             httpRequest.Content = new StringContent(serializedJson, Encoding.UTF8, "application/json");
             httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/event-stream"));
 
-            using HttpResponseMessage? httpResponse = await Options.HttpClient.SendAsync(
+            using HttpResponseMessage httpResponse = await Options.HttpClient.SendAsync(
                 httpRequest,
                 HttpCompletionOption.ResponseHeadersRead,
                 cancellationToken);
-            string responseContent = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
+            
+            // Remove the ReadAsStringAsync call to avoid buffering the entire response.
             httpResponse.EnsureSuccessStatusCode();
             
-            if (!httpResponse.IsSuccessStatusCode)
-            {
-                Options.Logger?.LogError("Non-success status code: {Status}", httpResponse.StatusCode);
-                throw new SpongeLLMException(
-                    "Generation request failed",
-                    (int)httpResponse.StatusCode,
-                    responseContent);
-            }
-
-            using Stream? stream = await httpResponse.Content.ReadAsStreamAsync(cancellationToken);
-            using StreamReader? reader = new StreamReader(stream, Encoding.UTF8);
+            using Stream stream = await httpResponse.Content.ReadAsStreamAsync(cancellationToken);
+            using StreamReader reader = new StreamReader(stream, Encoding.UTF8);
 
             while (!reader.EndOfStream && !cancellationToken.IsCancellationRequested)
             {
