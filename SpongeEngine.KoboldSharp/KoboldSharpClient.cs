@@ -7,7 +7,7 @@ using ChatMessage = Microsoft.Extensions.AI.ChatMessage;
 
 namespace SpongeEngine.KoboldSharp
 {
-    public partial class KoboldSharpClient : LLMClientBase, IIsAvailable, ITextCompletion, IStreamableTextCompletion, IChatClient
+    public partial class KoboldSharpClient : LLMClientBase, IIsAvailable, ITextCompletion, IStreamableTextCompletion, IChatClient, IStopInference
     {
         public override KoboldSharpClientOptions Options { get; }
 
@@ -115,6 +115,13 @@ namespace SpongeEngine.KoboldSharp
         }
 
         public ChatClientMetadata Metadata { get; }
+        #endregion
+
+        #region IStopInference
+        public async Task<bool> StopInference()
+        {
+            return await AbortGenerateAsync();
+        }
         #endregion
     }
 }
