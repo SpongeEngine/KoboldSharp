@@ -29,12 +29,8 @@ namespace SpongeEngine.KoboldSharp
             httpRequest.Content = new StringContent(serializedJson, Encoding.UTF8, "application/json");
             httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/event-stream"));
 
-            using HttpResponseMessage httpResponse = await Options.HttpClient.SendAsync(
-                httpRequest,
-                HttpCompletionOption.ResponseHeadersRead,
-                cancellationToken);
+            using HttpResponseMessage httpResponse = await Options.HttpClient.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
             
-            // Remove the ReadAsStringAsync call to avoid buffering the entire response.
             httpResponse.EnsureSuccessStatusCode();
             
             using Stream stream = await httpResponse.Content.ReadAsStreamAsync(cancellationToken);
