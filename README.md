@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/github/license/SpongeEngine/KoboldSharp)](LICENSE)
 [![.NET](https://img.shields.io/badge/.NET-6.0%20%7C%207.0%20%7C%208.0%2B-512BD4)](https://dotnet.microsoft.com/download)
 
-C# client for KoboldCpp.
+The C# client for KoboldCpp.
 
 ## Features
 - Complete support for KoboldCpp's native API
