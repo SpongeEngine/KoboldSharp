@@ -8,7 +8,7 @@
         <!-- Package Info -->
         <PackageId>SpongeEngine.KoboldSharp</PackageId>
         <Title>KoboldSharp</Title>
-        <Version>1.84.2.3</Version>
+        <Version>1.85.1</Version>
         <Authors>Dan Clipca</Authors>
         <Company>Sponge Engine</Company>
         <Description>C# client for KoboldCpp.</Description>
