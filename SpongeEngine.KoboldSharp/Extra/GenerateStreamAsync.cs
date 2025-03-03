@@ -23,30 +23,28 @@ namespace SpongeEngine.KoboldSharp
         public async IAsyncEnumerable<string> GenerateStreamAsync(KoboldSharpClient.KoboldSharpRequest request, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             request.Stream = true;
-            
+    
             using HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Post, "api/extra/generate/stream");
             var serializedJson = JsonSerializer.Serialize(request, Options.JsonSerializerOptions);
             httpRequest.Content = new StringContent(serializedJson, Encoding.UTF8, "application/json");
             httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/event-stream"));
 
             using HttpResponseMessage httpResponse = await Options.HttpClient.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-            
             httpResponse.EnsureSuccessStatusCode();
-            
+    
             using Stream stream = await httpResponse.Content.ReadAsStreamAsync(cancellationToken);
             using StreamReader reader = new StreamReader(stream, Encoding.UTF8);
 
             while (!reader.EndOfStream && !cancellationToken.IsCancellationRequested)
             {
                 string? line = await reader.ReadLineAsync();
-                if (string.IsNullOrEmpty(line))
+                if (string.IsNullOrWhiteSpace(line))
                 {
-                    await Task.Delay(50, cancellationToken);
+                    await Task.Yield();
                     continue;
                 }
 
                 Options.Logger?.LogDebug("Received line: {Line}", line);
-
                 if (!line.StartsWith("data: ")) continue;
 
                 var data = line[6..];
@@ -61,7 +59,6 @@ namespace SpongeEngine.KoboldSharp
                 catch (JsonException ex)
                 {
                     Options.Logger?.LogWarning(ex, "Failed to parse SSE message: {Message}", data);
-                    continue;
                 }
 
                 if (!string.IsNullOrEmpty(token))
