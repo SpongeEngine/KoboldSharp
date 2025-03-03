@@ -82,12 +82,9 @@ namespace SpongeEngine.KoboldSharp
 
             await foreach (var token in GenerateStreamAsync(koboldRequest, cancellationToken))
             {
-                var tokenCount = await CountTokensAsync(new CountTokensRequest { Prompt = token }, cancellationToken);
-        
                 yield return new TextCompletionToken
                 {
                     Text = token,
-                    TokenCount = tokenCount.Count
                 };
             }
         }
